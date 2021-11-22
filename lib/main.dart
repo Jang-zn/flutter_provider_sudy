@@ -1,5 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider_sudy/selectedname.dart';
 
 void main() => runApp(MyApp());
 
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
     final wordPair = WordPair.random();
     return MaterialApp(
       title: "startUp Name Generator",
+      theme:ThemeData.light(),
       home: RandomWords(),
     );
   }
@@ -35,9 +37,9 @@ class _RandomWordsState extends State<RandomWords> {
             icon: Icon(Icons.menu),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) => _selectedNames.isNotEmpty
-                      ? SelectedNamePage(_selectedNames)
-                      : Container()));
+                  builder: (ctx)=> SelectedNamePage(list:_selectedNames),
+                )
+              );
             },
           ),
         ],
@@ -61,18 +63,6 @@ class _RandomWordsState extends State<RandomWords> {
         });
   }
 
-  Widget SelectedNamePage(List<WordPair> list) {
-    return ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return const Divider();
-          /*2*/
-
-          final index = i ~/ 2; /*3*/
-          return _buildRow(_selectedNames[index]);
-        });
-  }
-
   Widget _buildRow(WordPair pair) {
     return ListTile(
       title: Row(
@@ -85,7 +75,7 @@ class _RandomWordsState extends State<RandomWords> {
         _selectedNames.contains(pair)?Icon(Icons.favorite, color:Colors.redAccent):Icon(Icons.favorite_outline),
       ]),
       onTap: () {
-        setState(() {
+        setState((){
           if(_selectedNames.contains(pair)){
             _selectedNames.remove(pair);
           }else{
