@@ -1,17 +1,21 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_provider_sudy/selected_notifier.dart';
 import 'package:flutter_provider_sudy/selectedname.dart';
+import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
-    return MaterialApp(
+    return
+      ChangeNotifierProvider<SelectedNotifier>(create: (_)=>SelectedNotifier(),
+      child:MaterialApp(
       title: "startUp Name Generator",
       theme:ThemeData.light(),
       home: RandomWords(),
+      )
     );
   }
 }
@@ -28,7 +32,6 @@ class _RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Startup Name Generator'),
@@ -37,7 +40,7 @@ class _RandomWordsState extends State<RandomWords> {
             icon: Icon(Icons.menu),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx)=> SelectedNamePage(list:_selectedNames),
+                  builder: (ctx)=> SelectedNamePage(notifier:context.watch<SelectedNotifier>()),
                 )
               );
             },
@@ -64,24 +67,20 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
-    return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-        Text(
-          pair.asPascalCase,
-          style: _biggerFont,
-        ),
-        _selectedNames.contains(pair)?Icon(Icons.favorite, color:Colors.redAccent):Icon(Icons.favorite_outline),
-      ]),
-      onTap: () {
-        setState((){
-          if(_selectedNames.contains(pair)){
-            _selectedNames.remove(pair);
-          }else{
-            _selectedNames.add(pair);
-          }
-        });
+    return Consumer<SelectedNotifier>(
+      builder:(ctx,selectedNotifier, child){
+        return ListTile(
+          title:
+                Text(
+                  pair.asPascalCase,
+                  style: _biggerFont,
+                ),
+                trailing : selectedNotifier.selectedNames.contains(pair)?Icon(Icons.favorite, color:Colors.redAccent):Icon(Icons.favorite_outline),
+
+          onTap: () {
+            selectedNotifier.toggleSelected(pair);
+          },
+        );
       },
     );
   }
