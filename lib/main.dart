@@ -10,11 +10,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-      ChangeNotifierProvider<SelectedNotifier>(create: (_)=>SelectedNotifier(),
-      child:MaterialApp(
-      title: "startUp Name Generator",
-      theme:ThemeData.light(),
-      home: RandomWords(),
+    //구현한 changeNotifier를 연결해주는 Provider로 감싸줌
+      ChangeNotifierProvider<SelectedNotifier>(
+        create: (_)=>SelectedNotifier(),
+        child:MaterialApp(
+        title: "startUp Name Generator",
+        theme:ThemeData.light(),
+        home: RandomWords(),
       )
     );
   }
@@ -51,6 +53,7 @@ class _RandomWordsState extends State<RandomWords> {
     );
   }
 
+
   Widget _buildSuggestions() {
     return ListView.builder(
         padding: const EdgeInsets.all(16.0),
@@ -75,7 +78,8 @@ class _RandomWordsState extends State<RandomWords> {
                   pair.asPascalCase,
                   style: _biggerFont,
                 ),
-                trailing : selectedNotifier.selectedNames.contains(pair)?Icon(Icons.favorite, color:Colors.redAccent):Icon(Icons.favorite_outline),
+                trailing : selectedNotifier
+                    .selectedNames.contains(pair)?Icon(Icons.favorite, color:Colors.redAccent):Icon(Icons.favorite_outline),
 
           onTap: () {
             selectedNotifier.toggleSelected(pair);

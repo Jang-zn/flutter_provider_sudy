@@ -11,11 +11,13 @@ class SelectedNotifier extends ChangeNotifier{
       }else{
         _selectedNames.add(newWord);
       }
+      //consumer들에게 변화 알림
       notifyListeners();
   }
 
   void deleteSelected(WordPair word){
     _selectedNames.remove(word);
+    //consumer들에게 변화 알림
     notifyListeners();
   }
 
